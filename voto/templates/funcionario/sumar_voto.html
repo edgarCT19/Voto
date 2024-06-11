@@ -1,0 +1,85 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+
+<style>
+    .btn-add {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        background-color: green;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-add:hover {
+        background-color: rgb(4, 138, 4);
+    }
+
+    .btn-edit {
+        padding: 5px 10px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: black;
+        background-color: rgb(239, 239, 0);
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-edit:hover {
+        background-color: rgb(235, 235, 3);
+    }
+
+    .btn-delete {
+        padding: 5px 10px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        background-color: red;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-delete:hover {
+        background-color: rgb(250, 72, 72);
+    }
+</style>
+
+<h4 style="margin-bottom: 10px;">Funcionario/ Registra los votos para que sean sumados</h4>
+
+<a href="{% url 'funcionario' %}" class="btn-delete">Volver</a>
+
+<div class="card" style="margin-top: 18px;">
+    <form method="post" id="votoForm">
+        {% csrf_token %}
+        <label for="candidato">Candidato:</label><br>
+        <select name="candidato" id="candidato">
+            {% for candidato in candidatos %}
+            <option value="{{ candidato.id }}">{{ candidato.nombre }} {{ candidato.apellido }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="votos">Votos:</label><br>
+        <input type="number" id="votos" name="votos" min="0" required><br>
+        <input type="submit" value="Registrar Votos">
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script type="text/javascript">
+    import DataTable from 'datatables.net-dt';
+    import 'datatables.net-responsive-dt';
+     
+    let table = new DataTable('#myTable', '#myTable2', {
+        responsive: true
+    });
+</script>
+{% endblock content%}

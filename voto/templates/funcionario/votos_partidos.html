@@ -1,0 +1,97 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+
+<style>
+    .btn-add {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        background-color: green;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-add:hover {
+        background-color: rgb(4, 138, 4);
+    }
+
+    .btn-edit {
+        padding: 5px 10px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: black;
+        background-color: rgb(239, 239, 0);
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-edit:hover {
+        background-color: rgb(235, 235, 3);
+    }
+
+    .btn-delete {
+        padding: 5px 10px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        background-color: red;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-delete:hover {
+        background-color: rgb(250, 72, 72);
+    }
+</style>
+
+<h4 style="margin-bottom: 10px;">Funcionario/ Registro de votos por partido</h4>
+
+<a href="{% url 'sumar_votos' %}" class="btn-add">Sumar votos</a>
+
+<div class="card" style="margin-top: 18px;">
+    <table id="myTable" class="display">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Partido Político</th>
+                <th>Foto Principal</th>
+                <th>Votos Totales</th>
+                <th>Edad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for candidato in candidatos %}
+            <tr>
+                <td>{{ candidato.nombre }}</td>
+                <td>{{ candidato.apellido }}</td>
+                <td>{{ candidato.partido_politico.nombre }}</td>
+                <td><img src="{{ candidato.foto_principal.url }}" alt="Foto Principal"></td>
+                <td>{{ candidato.votos_totales }}</td>
+                <td>{{ candidato.edad }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script type="text/javascript">
+    import DataTable from 'datatables.net-dt';
+    import 'datatables.net-responsive-dt';
+     
+    let table = new DataTable('#myTable', '#myTable2', {
+        responsive: true
+    });
+</script>
+{% endblock content%}

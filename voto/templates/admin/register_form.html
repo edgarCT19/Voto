@@ -1,0 +1,63 @@
+{% extends 'inicio.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+
+<style>
+    .btn-volver {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        background-color: red;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-volver:hover {
+        background-color: rgb(246, 75, 75);
+    }
+</style>
+
+<h4 style="margin-bottom: 10px;">Administrador / formulario de registro de candidatos</h4>
+
+<a href="{% url 'candidatos' %}" class="btn-volver">Volver</a>
+
+<div class="card" style="margin-top: 18px;">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="id_nombre">Nombre:</label>
+        <input type="text" id="id_nombre" name="nombre" required><br>
+    
+        <label for="id_apellido">Apellido:</label>
+        <input type="text" id="id_apellido" name="apellido" required><br>
+    
+        <label for="id_partido_politico">Partido político:</label>
+        <select id="id_partido_politico" name="partido_politico" required>
+            <option value="">Seleccionar partido político</option>
+            <option value="PV">PV</option>
+            <!-- Aquí puedes agregar opciones para los partidos políticos -->
+        </select><br>
+    
+        <label for="id_foto_principal">Foto principal:</label>
+        <input type="file" id="id_foto_principal" name="foto_principal" accept="image/*"><br>
+    
+        <label for="id_foto_secundaria">Foto secundaria:</label>
+        <input type="file" id="id_foto_secundaria" name="foto_secundaria" accept="image/*"><br>
+    
+        <label for="id_votos_totales">Votos totales:</label>
+        <input type="number" id="id_votos_totales" name="votos_totales" min="0" required><br>
+    
+        <label for="id_edad">Edad:</label>
+        <input type="number" id="id_edad" name="edad" min="18" required><br>
+    
+        <button type="submit">Guardar</button>
+    </form>
+    
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+{% endblock content%}

@@ -1,0 +1,219 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="card" id="candidatos">
+    <div class="head-title">
+        <a href="#" class="btn-download" onclick="reloadPage()">
+            <i class="bi bi-arrow-clockwise"></i>
+            <span class="text">Actualizar</span>
+        </a>
+        <a href="{% url 'votacion' %}" class="btn-download" style="background-color: blueviolet;">
+            <i class="bi bi-box"></i>
+            <span class="text">Votar</span>
+        </a>
+    </div>
+    <ul class="box-info">
+        <li>
+            <i class='bx bxs-calendar-check' ></i>
+            <span class="text">
+                <h3>{{ total_actas }}</h3> <!-- Aquí se mostrará el número total de actas capturadas -->
+                <p>Actas capturadas</p>
+            </span>
+        </li>
+        <li>
+            <i class='bx bxs-x-circle' ></i>
+            <span class="text">
+                <h3>{{ total_votos_nulos }}</h3> <!-- Aquí se mostrará el total de votos nulos -->
+                <p>Votos nulos</p>
+            </span>
+        </li>
+        <li>
+            <i class='bx bxs-group' ></i>
+            <span class="text">
+                <h3>{{ total_votos_generales }}</h3>
+                <p>Total de votantes</p>
+            </span>
+        </li>
+    </ul>
+</div>
+
+<!-- Carta con tabla -->
+<div class="card" style="margin-top: 10px;">
+    <h2>Tabla de Candidatos</h2>
+    <table class="table">
+        <thead class="thead">
+            <tr class="tr">
+                <th class="th">Nombre</th>
+                <th class="th">Apellido</th>
+                <th class="th">Partido Político</th>
+                <th class="th">Foto Principal</th>
+                <th class="th">Votos Totales</th>
+                <th class="th">Edad</th>
+            </tr>
+        </thead>
+        <tbody class="tbody">
+            {% for candidato in candidatos %}
+            <tr class="tr">
+                <td class="td">{{ candidato.nombre }}</td>
+                <td class="td">{{ candidato.apellido }}</td>
+                <td class="td">{{ candidato.partido_politico.nombre }}</td>
+                <td class="td"><img src="{{ candidato.foto_principal_url }}" alt="Foto Principal"></td>
+                <td class="td">{{ candidato.votos_totales }}</td>
+                <td class="td">{{ candidato.edad }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Tabla de Actas -->
+<div class="card" style="margin-top: 10px;">
+    <h2>Tabla de Actas</h2>
+    <table class="table">
+        <thead class="thead">
+            <tr class="tr">
+                <th class="th">Fecha</th>
+                <th class="th">Casilla</th>
+                <th class="th">PDF</th>
+                <th class="th">Votos Partidos</th>
+                <th class="th">Votos Independientes</th>
+                <th class="th">Votos No Registrados</th>
+                <th class="th">Votos Nulos</th>
+            </tr>
+        </thead>
+        <tbody class="tbody">
+            {% for acta in actas %}
+            <tr class="tr">
+                <td class="td">{{ acta.fecha }}</td>
+                <td class="td">{{ acta.casilla.nombre }}</td>
+                <td class="td"><a href="{{ acta.pdf.url }}" target="_blank">Ver PDF</a></td>
+                <td class="td">{{ acta.votos_partidos }}</td>
+                <td class="td">{{ acta.votos_candidatos_independientes }}</td>
+                <td class="td">{{ acta.votos_no_registrados }}</td>
+                <td class="td">{{ acta.votos_nulos }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+		<!-- Contenedor para la gráfica de barras -->
+<div class="chart-container card" style="margin-top: 10px;" id="bar-chart-container">
+    <canvas id="bar-chart"></canvas>
+</div>
+
+<!-- Contenedor para la gráfica de pastel -->
+<div class="chart-container card" style="margin-top: 10px;">
+    <canvas id="pie-chart"></canvas>
+</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function () {
+				// Función para obtener los datos de los candidatos mediante AJAX
+				function getCandidatesData() {
+					$.ajax({
+						url: "{% url 'candidates_data' %}",
+						type: "GET",
+						success: function(data) {
+							// Datos obtenidos correctamente, generar las gráficas
+							generateCharts(data);
+						},
+						error: function(xhr, errmsg, err) {
+							console.log(xhr.status + ": " + xhr.responseText);
+						}
+					});
+				}
+			
+				// Función para generar las gráficas con los datos obtenidos
+				function generateCharts(data) {
+					var nombres = [];
+					var votos = [];
+			
+					// Obtener nombres y votos de los candidatos
+					for (var i = 0; i < data.length; i++) {
+						nombres.push(data[i].nombre + " " + data[i].apellido);
+						votos.push(data[i].votos_totales);
+					}
+			
+					// Encuentra el índice del candidato con el mayor número de votos
+					var indiceMaximo = votos.indexOf(Math.max(...votos));
+			
+					// Configuración de la gráfica de barras
+					var colores = Array(nombres.length).fill('rgba(54, 162, 235, 0.2)'); // Array con colores por defecto
+					colores[indiceMaximo] = 'rgba(255, 99, 132, 0.2)'; // Asigna otro color al candidato con mayor número de votos
+			
+					var barData = {
+						labels: nombres,
+						datasets: [{
+							label: 'Votos Totales',
+							backgroundColor: colores, // Usa el array de colores
+							borderColor: 'rgba(54, 162, 235, 1)',
+							borderWidth: 1,
+							data: votos
+						}]
+					};
+			
+					var barOptions = {
+						aspectRatio: 1,
+						maintainAspectRatio: false,
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: true
+								}
+							}]
+						}
+					};
+			
+					// Configuración de la gráfica de pastel
+					var pieData = {
+						labels: nombres,
+						datasets: [{
+							data: votos,
+							backgroundColor: [
+								'red',
+								'blue',
+								'yellow',
+								'green',
+								'purple',
+								'orange'
+							]
+						}]
+					};
+			
+					var pieOptions = {
+						aspectRatio: 1,
+						maintainAspectRatio: false
+					};
+			
+					// Obtener el contexto del lienzo de las gráficas
+					var barChartCanvas = document.getElementById('bar-chart').getContext('2d');
+					var pieChartCanvas = document.getElementById('pie-chart').getContext('2d');
+			
+					// Generar las gráficas de barras y de pastel
+					new Chart(barChartCanvas, {
+						type: 'bar',
+						data: barData,
+						options: barOptions
+					});
+			
+					new Chart(pieChartCanvas, {
+						type: 'pie',
+						data: pieData,
+						options: pieOptions
+					});
+				}
+			
+				// Llamar a la función para obtener los datos de los candidatos
+				getCandidatesData();
+			});
+			
+			function reloadPage() {
+				location.reload();
+			}
+		</script>
+		
+{% endblock content %}

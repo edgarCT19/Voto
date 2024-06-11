@@ -1,0 +1,106 @@
+{% extends 'inicio.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+
+<style>
+    .btn-add {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        background-color: green;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-add:hover {
+        background-color: rgb(4, 138, 4);
+    }
+
+    .btn-edit {
+        padding: 5px 10px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: black;
+        background-color: rgb(239, 239, 0);
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-edit:hover {
+        background-color: rgb(235, 235, 3);
+    }
+
+    .btn-delete {
+        padding: 5px 10px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        background-color: red;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-delete:hover {
+        background-color: rgb(250, 72, 72);
+    }
+</style>
+
+<h4 style="margin-bottom: 10px;">Administrador / Registro de Funcionarios</h4>
+
+<a href="{% url 'register_funcionario' %}" class="btn-add">Agregar nuevo funcionario</a>
+
+<div class="card" style="margin-top: 18px;">
+    <table id="myTable" class="display">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre de usuario</th>
+                <th>Email</th>
+                <th>Fecha de registro</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.date_joined }}</td>
+                <td>
+                    <a href="{% url 'edit_funcionario' %}">
+                        <button class="btn-edit">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                    </a>
+                    <a href="">
+                        <button class="btn-delete">
+                            <i class="bi bi-trash3-fill"></i>
+                        </button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script type="text/javascript">
+    import DataTable from 'datatables.net-dt';
+    import 'datatables.net-responsive-dt';
+     
+    let table = new DataTable('#myTable', '#myTable2', {
+        responsive: true
+    });
+</script>
+{% endblock content%}

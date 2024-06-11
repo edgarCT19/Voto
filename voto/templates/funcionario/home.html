@@ -1,0 +1,99 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+
+<style>
+    .btn-add {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        background-color: green;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-add:hover {
+        background-color: rgb(4, 138, 4);
+    }
+
+    .btn-edit {
+        padding: 5px 10px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: black;
+        background-color: rgb(239, 239, 0);
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-edit:hover {
+        background-color: rgb(235, 235, 3);
+    }
+
+    .btn-delete {
+        padding: 5px 10px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        background-color: red;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-delete:hover {
+        background-color: rgb(250, 72, 72);
+    }
+</style>
+
+<h4 style="margin-bottom: 10px;">Funcionario/ Registro de actas</h4>
+
+<a href="{% url 'register_acta' %}" class="btn-add">Registrar nueva acta</a>
+
+<div class="card" style="margin-top: 18px;">
+    <table id="myTable" class="display">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Casilla</th>
+                <th>PDF</th>
+                <th>Votos Partidos</th>
+                <th>Votos Candidatos Independientes</th>
+                <th>Votos No Registrados</th>
+                <th>Votos Nulos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for acta in actas %}
+            <tr>
+                <td>{{ acta.fecha }}</td>
+                <td>{{ acta.casilla }}</td>
+                <td>{{ acta.pdf }}</td>
+                <td>{{ acta.votos_partidos }}</td>
+                <td>{{ acta.votos_candidatos_independientes }}</td>
+                <td>{{ acta.votos_no_registrados }}</td>
+                <td>{{ acta.votos_nulos }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script type="text/javascript">
+    import DataTable from 'datatables.net-dt';
+    import 'datatables.net-responsive-dt';
+     
+    let table = new DataTable('#myTable', '#myTable2', {
+        responsive: true
+    });
+</script>
+{% endblock content%}
